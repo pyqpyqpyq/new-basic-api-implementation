@@ -4,9 +4,8 @@ package com.thoughtworks.rslist.api;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.entity.UserEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -45,4 +44,10 @@ class UserController {
                 .build();
         userRepository.save(userEntity);
     }
+
+//    @GetMapping("/user/{index}")
+//    public ResponseEntity search(@Valid @PathVariable Integer index) {
+//
+//        User user=UserEntity.builder
+//    }
 }

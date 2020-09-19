@@ -14,9 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasKey;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -35,31 +36,31 @@ class UserControllerTest {
         User user = new User("pyq", "female", 18, "a@b.com", "12345678912");
         ObjectMapper objectMapper = new ObjectMapper();
         String request = objectMapper.writeValueAsString(user);
-
         mockMvc.perform(post("/user").content(request).contentType(MediaType.APPLICATION_JSON).content(request))
                 .andExpect((status().isOk()));
-
         List<UserEntity> users = userRepository.findAll();
 
-        assertEquals(1,users.size());
-        assertEquals("pyq",users.get(0).getName());
+        assertEquals(1, users.size());
+        assertEquals("pyq", users.get(0).getName());
     }
 
 
-    @Test
-    public void should_search_and_return_user_info() throws Exception {
-        User user = new User("pyq", "female", 18, "a@b.com", "12345678912");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String request = objectMapper.writeValueAsString(user);
-
-        mockMvc.perform(post("/user").content(request).contentType(MediaType.APPLICATION_JSON).content(request))
-                .andExpect((status().isOk()));
-
-        List<UserEntity> users = userRepository.findAll();
-
-        assertEquals(1,users.size());
-        assertEquals("pyq",users.get(0).getName());
-    }
+//    @Test
+//    public void should_search_and_return_user_info() throws Exception {
+//        User user = new User("pyq", "female", 18, "a@b.com", "12345678912");
+//        User user1 = new User("mayun", "male", 58, "alibaba@b.com", "88345678912");
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String request = objectMapper.writeValueAsString(user);
+//        mockMvc.perform(post("/user").content(request).contentType(MediaType.APPLICATION_JSON).content(request))
+//                .andExpect((status().isOk()));
+//        mockMvc.perform(post("/user1").content(request).contentType(MediaType.APPLICATION_JSON).content(request))
+//                .andExpect((status().isOk()));
+//
+//        mockMvc.perform(get("/getuser/1"))
+//                .andExpect((status().isOk()))
+//                .andExpect(jsonPath("$.name", is("mayun")))
+//                .andExpect(jsonPath("$.email", is("alibaba@b.com")));
+//    }
 
 
 //    @Test

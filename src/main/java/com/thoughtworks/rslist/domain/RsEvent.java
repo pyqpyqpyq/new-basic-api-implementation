@@ -2,23 +2,23 @@ package com.thoughtworks.rslist.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
-public class RsEvent {
+
+@NoArgsConstructor
+@AllArgsConstructor
+public class RsEvent implements Serializable {
     @NotNull
     private String eventName;
     @NotNull
     private String keyWord;
+    @NotNull
     private User user;
 
-
-    public RsEvent(String eventName, String keyWord, User user) {
-        this.eventName = eventName;
-        this.keyWord = keyWord;
-        this.user=user;
-    }
-    public RsEvent(){}
 
     public String getEventName() {
         return eventName;
