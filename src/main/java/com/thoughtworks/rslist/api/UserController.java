@@ -16,6 +16,8 @@ import java.util.List;
 class UserController {
     List<User> userList = new ArrayList<>();
     private final UserRepository userRepository;
+    //    @Autowired
+//    UserRepository userRepository;
 
     UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -31,8 +33,6 @@ class UserController {
 //       return userList;
 //    }
 
-    //    @Autowired
-//    UserRepository userRepository;
     @PostMapping("/user")
     public void register(@RequestBody @Valid User user) {
 

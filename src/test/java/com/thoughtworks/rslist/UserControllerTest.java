@@ -31,7 +31,23 @@ class UserControllerTest {
     UserRepository userRepository;
 
     @Test
-    public void should_register_user() throws Exception {
+    public void should_register_user1() throws Exception {
+        User user = new User("pyq", "female", 18, "a@b.com", "12345678912");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String request = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/user").content(request).contentType(MediaType.APPLICATION_JSON).content(request))
+                .andExpect((status().isOk()));
+
+        List<UserEntity> users = userRepository.findAll();
+
+        assertEquals(1,users.size());
+        assertEquals("pyq",users.get(0).getName());
+    }
+
+
+    @Test
+    public void should_search_and_return_user_info() throws Exception {
         User user = new User("pyq", "female", 18, "a@b.com", "12345678912");
         ObjectMapper objectMapper = new ObjectMapper();
         String request = objectMapper.writeValueAsString(user);
