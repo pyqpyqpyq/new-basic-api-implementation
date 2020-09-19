@@ -3,7 +3,7 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.repository.UserRepository;
-import entity.UserEntity;
+import com.thoughtworks.rslist.entity.UserEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
