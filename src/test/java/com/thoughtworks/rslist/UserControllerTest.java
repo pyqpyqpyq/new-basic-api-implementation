@@ -2,6 +2,7 @@ package com.thoughtworks.rslist;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.entity.UserEntity;
 import org.junit.jupiter.api.MethodOrderer;
@@ -41,9 +42,27 @@ class UserControllerTest {
         List<UserEntity> users = userRepository.findAll();
 
         assertEquals(1, users.size());
-        assertEquals("pyq", users.get(0).getName());
+        assertEquals("pyq", users.get(0).getUserName());
     }
 
+//    @Test
+//    public void shouldDeleteUSer(){
+//        UserEntity user = UserEntity.builder()
+//                .userName("user0")
+//                .gender("male")
+//                .age(19)
+//                .phone("13579245810")
+//                .email("a@b.cn")
+//                .voteNum(10)
+//                .build();
+//        userRepository.save(user);
+//        RsEventEntity rsEvent =RsEventEntity.builder()
+//                .eventName("event0")
+//                .keyWord("key")
+//                .userId(user.getId())
+//                .build();
+//        rsEventRepository.save(rsEvent);
+//    }
 
 //    @Test
 //    public void should_search_and_return_user_info() throws Exception {

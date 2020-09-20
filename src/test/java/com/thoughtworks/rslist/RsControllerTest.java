@@ -24,13 +24,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class RsListApplicationTests {
+class RsControllerTest {
 
-    RsController rsController;
-    @BeforeEach
-    public void SetUp(){
-        rsController=new RsController(userRepository, rsEventRepository);
-    }
+//    RsController rsController;
+//    @BeforeEach
+//    public void SetUp(){
+//        rsController=new RsController(userRepository, rsEventRepository);
+//    }
 
     @Autowired
     UserRepository userRepository;
@@ -39,11 +39,16 @@ class RsListApplicationTests {
     @Autowired
     RsEventRepository rsEventRepository;
 
+    @BeforeEach
+    void init() {
+        userRepository.deleteAll();
+        rsEventRepository.deleteAll();
+    }
 
-    @DirtiesContext
     @Test
     public void shouldAddRsEventWhenUserExists() throws Exception {
-        UserEntity user = UserEntity.builder().name("user 0")
+        UserEntity user = UserEntity.builder()
+                .userName("user0")
                 .gender("male")
                 .age(19)
                 .phone("13579245810")
@@ -51,8 +56,7 @@ class RsListApplicationTests {
                 .voteNum(10)
                 .build();
         userRepository.save(user);
-        String jsonValue ="{\"eventName\":\"猪肉涨价了\",\"keyword\":\"经济\",\"userId\":"+user.getId() + "}";
-
+        String jsonValue = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"userId\": " + user.getId() + "}";
 
         mockMvc.perform(post("/rs/event")
                 .content(jsonValue)
@@ -60,16 +64,22 @@ class RsListApplicationTests {
                 .andExpect(status().isCreated());
 
         List<RsEventEntity> rsEvents = rsEventRepository.findAll();
-        assertEquals(1,rsEvents.size());
-        assertEquals("猪肉涨价了",rsEvents.get(0).getEventName());
-        assertEquals("经济",rsEvents.get(0).getKeyWord());
-        assertEquals(user.getId(),rsEvents.get(0).getId());
+        assertEquals(1, rsEvents.size());
+        assertEquals("猪肉涨价了", rsEvents.get(0).getEventName());
+        assertEquals("经济", rsEvents.get(0).getKeyWord());
+        assertEquals(user.getId(), rsEvents.get(0).getUserId());
     }
 
 
+    @Test
+    void shouldAddRsEventFailedWhenUserDoesNotExit() throws Exception {
+        String jsonValue1 = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"userId\": 1 }";
+        mockMvc.perform((post("/rs/event")
+                .content(jsonValue1)
+                .contentType(MediaType.APPLICATION_JSON)))
+                .andExpect(status().isBadRequest());
 
-
-
+    }
 
 //
 //    @DirtiesContext

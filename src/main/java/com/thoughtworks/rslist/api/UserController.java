@@ -36,7 +36,7 @@ class UserController {
     public void register(@RequestBody @Valid User user) {
 
         UserEntity userEntity = UserEntity.builder()
-                .name(user.getName())
+                .userName(user.getName())
                 .email(user.getEmail())
                 .age(user.getAge())
                 .gender(user.getGender())

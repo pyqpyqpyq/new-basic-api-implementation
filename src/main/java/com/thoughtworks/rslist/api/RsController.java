@@ -3,16 +3,19 @@ package com.thoughtworks.rslist.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
+import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@Validated
 public class RsController {
 
     //  @Autowired
@@ -33,11 +36,29 @@ public class RsController {
         return new ArrayList<>();
     }
 
-    @PostMapping("/rs/list")
-    public ResponseEntity addRsEvent(@RequestBody @Validated RsEvent rsEvent) {
+//    @PostMapping("/rs/event")
+//    public ResponseEntity addRsEvent(@RequestBody @Valid RsEvent rsEvent) {
+//        RsEventEntity entity=RsEventEntity.builder()
+//                .eventName(rsEvent.getEventName())
+//                .keyWord(rsEvent.getKeyWord())
+//                .userId(rsEvent.getUserId())
+//                .build();
+//        rsEventRepository.save(entity);
+//        return ResponseEntity.created(null).build();
+//
+//    }
 
-        rsEventRepository.save()
-        rsList.add(rsEvent);
+    @PostMapping("/rs/event")
+    public ResponseEntity addRsEvent(@RequestBody @Valid RsEvent rsEvent) {
+        if (!userRepository.existsById(rsEvent.getUserId())){
+            return ResponseEntity.badRequest().build();
+        }
+        RsEventEntity entity=RsEventEntity.builder()
+                .eventName(rsEvent.getEventName())
+                .keyWord(rsEvent.getKeyWord())
+                .userId(rsEvent.getUserId())
+                .build();
+        rsEventRepository.save(entity);
         return ResponseEntity.created(null).build();
 
     }
