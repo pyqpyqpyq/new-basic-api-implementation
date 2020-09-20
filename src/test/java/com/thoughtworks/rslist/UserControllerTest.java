@@ -3,6 +3,7 @@ package com.thoughtworks.rslist;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.entity.RsEventEntity;
+import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.entity.UserEntity;
 import org.junit.jupiter.api.MethodOrderer;
@@ -31,7 +32,8 @@ class UserControllerTest {
     MockMvc mockMvc;
     @Autowired
     UserRepository userRepository;
-
+    @Autowired
+    RsEventRepository rsEventRepository;
     @Test
     public void should_register_user1() throws Exception {
         User user = new User("pyq", "female", 18, "a@b.com", "12345678912");
@@ -45,24 +47,33 @@ class UserControllerTest {
         assertEquals("pyq", users.get(0).getUserName());
     }
 
-//    @Test
-//    public void shouldDeleteUSer(){
-//        UserEntity user = UserEntity.builder()
-//                .userName("user0")
-//                .gender("male")
-//                .age(19)
-//                .phone("13579245810")
-//                .email("a@b.cn")
-//                .voteNum(10)
-//                .build();
-//        userRepository.save(user);
-//        RsEventEntity rsEvent =RsEventEntity.builder()
-//                .eventName("event0")
-//                .keyWord("key")
-//                .userId(user.getId())
-//                .build();
-//        rsEventRepository.save(rsEvent);
-//    }
+    @Test
+    public void shouldDeleteUSer() throws Exception {
+        UserEntity user = UserEntity.builder()
+                .userName("user0")
+                .gender("male")
+                .age(19)
+                .phone("13579245810")
+                .email("a@b.cn")
+                .voteNum(10)
+                .build();
+        userRepository.save(user);
+        RsEventEntity rsEvent =RsEventEntity.builder()
+                .eventName("event0")
+                .keyWord("key")
+                .userId(user.getId())
+                .build();
+        rsEventRepository.save(rsEvent);
+
+        mockMvc.perform(delete("/user/{id}",user.getId()))
+                .andExpect(status().isNoContent());
+
+        List<UserEntity> users = userRepository.findAll();
+        List<RsEventEntity> rsEvents =rsEventRepository.findAll();
+
+        assertEquals(0,users.size());
+        assertEquals(0,rsEvents.size());
+    }
 
 //    @Test
 //    public void should_search_and_return_user_info() throws Exception {
