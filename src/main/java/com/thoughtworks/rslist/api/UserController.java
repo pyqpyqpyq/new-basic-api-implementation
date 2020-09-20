@@ -54,7 +54,6 @@ class UserController {
     @DeleteMapping("/user/{id}")
     public void delete(@PathVariable int id) {
         userRepository.deleteById(id);
-        rsEventRepository.deleteAllByUserId(id);
     }
 //    @GetMapping("/user/{index}")
 //    public ResponseEntity search(@Valid @PathVariable Integer index) {
