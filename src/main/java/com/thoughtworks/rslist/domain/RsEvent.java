@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.io.Serializable;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class RsEvent implements Serializable {
     @NotNull
     private String eventName;
@@ -20,6 +22,8 @@ public class RsEvent implements Serializable {
     private String keyWord;
     @NotNull
     private int userId;
+
+    private User user;
 
 
     public String getEventName() {
@@ -46,4 +50,8 @@ public class RsEvent implements Serializable {
         this.userId = userId;
     }
 
+    @JsonProperty
+    public User getUser(){return user;}
+    @JsonIgnore
+    public void setUser(){this.user=user;}
 }

@@ -3,16 +3,21 @@ package com.thoughtworks.rslist.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
+import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.entity.RsEventEntity;
+import com.thoughtworks.rslist.entity.UserEntity;
+import com.thoughtworks.rslist.exception.RequestNotValidException;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Validated
@@ -50,17 +55,36 @@ public class RsController {
 
     @PostMapping("/rs/event")
     public ResponseEntity addRsEvent(@RequestBody @Valid RsEvent rsEvent) {
-        if (!userRepository.existsById(rsEvent.getUserId())){
+        if (!userRepository.existsById(rsEvent.getUserId())) {
             return ResponseEntity.badRequest().build();
         }
-        RsEventEntity entity=RsEventEntity.builder()
+        RsEventEntity entity = RsEventEntity.builder()
                 .eventName(rsEvent.getEventName())
                 .keyWord(rsEvent.getKeyWord())
                 .userId(rsEvent.getUserId())
                 .build();
         rsEventRepository.save(entity);
         return ResponseEntity.created(null).build();
+    }
 
+    @GetMapping("/rs/{id}")
+    public ResponseEntity getOneRsEvent(@PathVariable int id) throws Exception {
+        Optional<RsEventEntity> result = rsEventRepository.findById(id);
+        if (!result.isPresent()) {
+            throw new RequestNotValidException("invalid id");
+        }
+        RsEventEntity rsEvent = result.get();
+        UserEntity user = userRepository.findById(rsEvent.getUserId()).get();
+
+        return ResponseEntity.ok(RsEvent.builder()
+                .eventName(rsEvent.getEventName())
+                .keyWord(rsEvent.getKeyWord())
+                .user(new User(user.getUserName(),
+                        user.getGender(),
+                        user.getAge(),
+                        user.getEmail(),
+                        user.getPhone()))
+                .build());
     }
 //  private List<RsEvent> rsList = initRsEventList();
 //  private List<RsEvent> initRsEventList() {
@@ -121,4 +145,4 @@ public class RsController {
 //    return ResponseEntity.created(null).build();
 //  }
 
-}
+    }

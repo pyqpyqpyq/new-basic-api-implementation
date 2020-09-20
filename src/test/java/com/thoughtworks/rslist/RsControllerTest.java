@@ -20,7 +20,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+//重要注释
+import static org.hamcrest.Matchers.*;
+//重要注释
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -80,24 +82,29 @@ class RsControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-//        @Test
-//    public void shouldGetOneEvent() throws Exception {
-//        mockMvc.perform(get("/rs/1"))
-//                .andExpect(jsonPath("$.eventName",is("第一条事件")))
-//                .andExpect(jsonPath("$.keyWord",is("无标签")))
-//                .andExpect(jsonPath("$",not(hasKey("user"))))
-//                .andExpect(status().isOk());
-//        mockMvc.perform(get("/rs/2"))
-//                .andExpect(jsonPath("$.eventName",is("第二条事件")))
-//                .andExpect(jsonPath("$.keyWord",is("无标签")))
-//                .andExpect(jsonPath("$",not(hasKey("user"))))
-//                .andExpect(status().isOk());
-//        mockMvc.perform(get("/rs/3"))
-//                .andExpect(jsonPath("$.eventName",is("第三条事件")))
-//                .andExpect(jsonPath("$.keyWord",is("无标签")))
-//                .andExpect(jsonPath("$",not(hasKey("user"))))
-//                .andExpect(status().isOk());
-//    }
+    @Test
+    public void shouldGetOneEvent() throws Exception {
+        UserEntity user = UserEntity.builder()
+                .userName("user0")
+                .gender("male")
+                .age(19)
+                .phone("13579245810")
+                .email("a@b.cn")
+                .voteNum(10)
+                .build();
+        userRepository.save(user);
+        RsEventEntity rsEvent = RsEventEntity.builder()
+                .eventName("event0")
+                .keyWord("key")
+                .userId(user.getId())
+                .build();
+        rsEventRepository.save(rsEvent);
+
+        mockMvc.perform(get("/rs/{id}", rsEvent.getId()))
+                .andExpect(jsonPath("$.eventName", is("event0")))
+                .andExpect(jsonPath("$.user.name", is("user0")));
+
+    }
 
 //
 //    @DirtiesContext
