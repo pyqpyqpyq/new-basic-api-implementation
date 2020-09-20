@@ -6,6 +6,7 @@ import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.entity.UserEntity;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -34,6 +35,11 @@ class UserControllerTest {
     UserRepository userRepository;
     @Autowired
     RsEventRepository rsEventRepository;
+    @BeforeEach
+    void setUp(){
+        rsEventRepository.deleteAll();
+        userRepository.deleteAll();;
+    }
     @Test
     public void should_register_user1() throws Exception {
         User user = new User("pyq", "female", 18, "a@b.com", "12345678912");
