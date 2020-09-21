@@ -69,7 +69,40 @@ class RsControllerTest {
         assertEquals(1, rsEvents.size());
         assertEquals("猪肉涨价了", rsEvents.get(0).getEventName());
         assertEquals("经济", rsEvents.get(0).getKeyWord());
-        assertEquals(user.getId(), rsEvents.get(0).getUserId());
+        assertEquals(user.getId(), rsEvents.get(0).getUser().getId());
+    }
+
+    @Test
+    public void shouldModifyRsEventWhenUserExists() throws Exception {
+        UserEntity user = UserEntity.builder()
+                .userName("user0")
+                .gender("male")
+                .age(19)
+                .phone("13579245810")
+                .email("a@b.cn")
+                .voteNum(10)
+                .build();
+        userRepository.save(user);
+        String jsonValue = "{\"eventName\":\"热搜事件名\",\"keyWord\":\"关键字\",\"userId\": " + user.getId() + "}";
+
+        mockMvc.perform(post("/rs/event")
+                .content(jsonValue)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+
+        String newJsonValue = "{\"eventName\":\"新的热搜事件名\",\"keyWord\":\"新的关键字\",\"userId\": " + user.getId() + "}";
+
+        mockMvc.perform(patch("/rs/1")
+                .content(newJsonValue)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        List<RsEventEntity> rsEvents = rsEventRepository.findAll();
+        assertEquals(1, rsEvents.size());
+        assertEquals("新的热搜事件名", rsEvents.get(0).getEventName());
+        assertEquals("新的关键字", rsEvents.get(0).getKeyWord());
+        assertEquals(user.getId(), rsEvents.get(0).getUser().getId());
     }
 
 
@@ -96,7 +129,7 @@ class RsControllerTest {
         RsEventEntity rsEvent = RsEventEntity.builder()
                 .eventName("event0")
                 .keyWord("key")
-                .userId(user.getId())
+                .user(user)
                 .build();
         rsEventRepository.save(rsEvent);
 
@@ -182,7 +215,7 @@ class RsControllerTest {
 //    @DirtiesContext
 //    @Test
 //    public void should_add_rs_event() throws Exception {
-//        User user =new User("yzq", "female",18,"a@b.com","12345678912");
+//        User user =new User("pyq", "female",18,"a@b.com","12345678912");
 //        RsEvent rsEvent = new RsEvent("猪肉涨价了","经济",user);
 //        ObjectMapper objectMapper = new ObjectMapper();
 //        String jsonString = objectMapper.writeValueAsString(rsEvent);
@@ -208,7 +241,7 @@ class RsControllerTest {
 //    @DirtiesContext
 //    @Test
 //    public void should_patch_rs_event() throws Exception {
-//        User user =new User("yzq", "female",18,"a@b.com","12345678912");
+//        User user =new User("pyq", "female",18,"a@b.com","12345678912");
 //        RsEvent rsEvent = new RsEvent("第三条事件patch","实时",user);
 //        ObjectMapper objectMapper = new ObjectMapper();
 //        String jsonString = objectMapper.writeValueAsString(rsEvent);

@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.entity;
 
+import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +21,34 @@ public class RsEventEntity {
    @Column(name = "name")
     private String eventName;
     private String keyWord;
-    private int userId;
+//    private int userId;
+
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private UserEntity user;
+
+    public RsEventEntity merge(RsEventEntity rsEventEntity) {
+        if (rsEventEntity.eventName != null) {
+            this.eventName = rsEventEntity.eventName;
+        }
+
+        if (rsEventEntity.keyWord != null) {
+            this.keyWord = rsEventEntity.keyWord;
+        }
+
+        return this;
+    }
+
+    public static RsEventEntity from(RsEvent rsEvent) {
+        return RsEventEntity.builder()
+                .id(rsEvent.getUserId())
+                .eventName(rsEvent.getEventName())
+                .keyWord(rsEvent.getKeyWord())
+                .user(UserEntity.builder()
+                        .id(rsEvent.getUserId())
+                        .build())
+                .build();
+    }
 }
+
+

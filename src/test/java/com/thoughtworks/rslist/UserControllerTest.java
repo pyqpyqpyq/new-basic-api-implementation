@@ -18,11 +18,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.Optional;
-
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.hasKey;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -67,7 +67,7 @@ class UserControllerTest {
         RsEventEntity rsEvent =RsEventEntity.builder()
                 .eventName("event0")
                 .keyWord("key")
-                .userId(user.getId())
+                .user(user)
                 .build();
         rsEventRepository.save(rsEvent);
 

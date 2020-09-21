@@ -7,6 +7,7 @@ import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.exception.RequestNotValidException;
+import com.thoughtworks.rslist.exception.wrongInfomationException;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
@@ -61,7 +62,9 @@ public class RsController {
         RsEventEntity entity = RsEventEntity.builder()
                 .eventName(rsEvent.getEventName())
                 .keyWord(rsEvent.getKeyWord())
-                .userId(rsEvent.getUserId())
+                .user(UserEntity.builder()
+                        .id(rsEvent.getUserId())
+                        .build())
                 .build();
         rsEventRepository.save(entity);
         return ResponseEntity.created(null).build();
@@ -74,7 +77,7 @@ public class RsController {
             throw new RequestNotValidException("invalid id");
         }
         RsEventEntity rsEvent = result.get();
-        UserEntity user = userRepository.findById(rsEvent.getUserId()).get();
+        UserEntity user = rsEvent.getUser();
 
         return ResponseEntity.ok(RsEvent.builder()
                 .eventName(rsEvent.getEventName())
@@ -86,6 +89,21 @@ public class RsController {
                         user.getPhone()))
                 .build());
     }
+
+      @PatchMapping("/rs/{index}")
+  public ResponseEntity patchRsEvent (@RequestBody RsEvent rsEvent, @PathVariable int index) throws wrongInfomationException {
+    if (rsEvent.getUserId()!=rsEventRepository.findById(index).get().getUser().getId()){
+        throw new wrongInfomationException();
+    }
+          RsEventEntity rsEventEntity = RsEventEntity.from(rsEvent);
+        RsEventEntity oldRsEventEntity = rsEventRepository.findById(rsEventEntity.getId()).get();
+          RsEventEntity change=oldRsEventEntity.from(rsEvent);
+          RsEventEntity newRsEventEntity=rsEventEntity.merge(change);
+          rsEventRepository.save(newRsEventEntity);
+          return ResponseEntity.created(null).build();
+
+  }
+
 //  private List<RsEvent> rsList = initRsEventList();
 //  private List<RsEvent> initRsEventList() {
 //    List<RsEvent> rsEventList = new ArrayList<>();
